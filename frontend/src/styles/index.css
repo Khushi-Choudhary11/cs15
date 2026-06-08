@@ -548,6 +548,19 @@ select option {
   }
 
   /* ═════════════════════════════════════════════════════════════
+     .post-detail-dialog::backdrop — reset to transparent.
+     Visual overlay is provided by the .search-overlay sibling div
+     rendered in the React tree, which reuses the exact same blur +
+     tint treatment as the search experience. The native ::backdrop
+     must be invisible to avoid double-darkening.
+     ═════════════════════════════════════════════════════════════ */
+  .post-detail-dialog::backdrop {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
      .search-panel — premium glassmorphism modal container
      Light: clean white glass, no muddy tint.
      Dark: dark charcoal glass with subtle green gradient.

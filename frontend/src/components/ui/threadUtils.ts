@@ -27,13 +27,13 @@ export const DEPTH_BARS = [
   'bg-violet-400',
 ];
 
-export const LIFECYCLE_CONFIG: Record<string, { label: string; cls: string }> = {
-  open:               { label: 'Open',              cls: 'bg-gray-100 text-gray-600 border-gray-200' },
-  answered:           { label: 'Solved',            cls: 'bg-blue-50 text-blue-700 border-blue-200' },
-  community_accepted: { label: 'Community ✓',       cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  ai_validated:       { label: 'AI Validated',      cls: 'bg-purple-50 text-purple-700 border-purple-200' },
-  admin_accepted:     { label: 'Admin Approved',    cls: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-  converted_to_faq:   { label: 'Official FAQ',      cls: 'bg-stone-100 text-stone-700 border-stone-300' },
+export const LIFECYCLE_CONFIG: Record<string, { label: string; cls: string; dot?: string; icon?: string }> = {
+  open:               { label: 'Open',          cls: 'bg-white/5 text-ink-soft border-white/10',                  dot: 'bg-ink-faint',   icon: '○' },
+  answered:           { label: 'Solved',         cls: 'bg-accent/10 text-accent border-accent/25',                dot: 'bg-accent',      icon: '✓' },
+  community_accepted: { label: 'Community ✓',    cls: 'bg-emerald-400/10 text-emerald-400 border-emerald-400/25', dot: 'bg-emerald-400', icon: '✦' },
+  ai_validated:       { label: 'AI Validated',   cls: 'bg-violet-400/10 text-violet-400 border-violet-400/25',    dot: 'bg-violet-400',  icon: '✧' },
+  admin_accepted:     { label: 'Admin Approved', cls: 'bg-blue-400/10 text-blue-400 border-blue-400/25',          dot: 'bg-blue-400',    icon: '✦' },
+  converted_to_faq:   { label: 'Official FAQ',   cls: 'bg-amber-400/10 text-amber-400 border-amber-400/25',       dot: 'bg-amber-400',   icon: '★' },
 };
 
 // Count total descendants recursively

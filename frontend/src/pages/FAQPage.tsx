@@ -70,7 +70,7 @@ function CategoryPills({ categories, activeCategory, onSelect }: CategoryPillsPr
             onClick={() => onSelect('')}
             className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0
               ${allActive
-                ? 'bg-ink text-accent-text border-ink'
+                ? 'bg-accent text-accent-text border-accent/60 shadow-[0_10px_26px_rgba(90,122,90,0.25)]'
                 : 'bg-card/80 text-ink border-border/70 hover:bg-cream hover:-translate-y-0.5 hover:shadow-subtle'
               }`}
           >
