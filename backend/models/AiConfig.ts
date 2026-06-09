@@ -18,7 +18,7 @@
 import mongoose, { Schema, type Document } from 'mongoose';
 import { encrypt, decrypt } from '../utils/crypto.js';
 
-export type AIProviderType = 'anthropic' | 'openai' | 'xai' | 'minimax';
+export type AIProviderType = 'anthropic' | 'openai' | 'xai' | 'minimax' | 'gemini' | 'custom';
 
 export interface IProviderOverride {
   // Encrypted at rest. Empty string = "use env var" (or "not configured").
@@ -39,6 +39,8 @@ export interface IAiConfig extends Document {
     openai: IProviderOverride;
     xai: IProviderOverride;
     minimax: IProviderOverride;
+    gemini: IProviderOverride;
+    custom: IProviderOverride;
   };
 
   // Per-feature configuration
@@ -77,7 +79,7 @@ const aiConfigSchema = new Schema<IAiConfig>(
   {
     activeProvider: {
       type: String,
-      enum: ['anthropic', 'openai', 'xai', 'minimax'] as AIProviderType[],
+      enum: ['anthropic', 'openai', 'xai', 'minimax', 'gemini', 'custom'] as AIProviderType[],
       required: true,
       default: 'anthropic',
     },
@@ -88,6 +90,8 @@ const aiConfigSchema = new Schema<IAiConfig>(
         openai:    { type: providerOverrideSchema, default: () => ({}) },
         xai:       { type: providerOverrideSchema, default: () => ({}) },
         minimax:   { type: providerOverrideSchema, default: () => ({}) },
+        gemini:    { type: providerOverrideSchema, default: () => ({}) },
+        custom:    { type: providerOverrideSchema, default: () => ({}) },
       },
       required: true,
       default: () => ({
@@ -95,6 +99,8 @@ const aiConfigSchema = new Schema<IAiConfig>(
         openai:    { apiKeyCipher: '', baseURL: '', model: '' },
         xai:       { apiKeyCipher: '', baseURL: '', model: '' },
         minimax:   { apiKeyCipher: '', baseURL: '', model: '' },
+        gemini:    { apiKeyCipher: '', baseURL: '', model: '' },
+        custom:    { apiKeyCipher: '', baseURL: '', model: '' },
       }),
     },
 
@@ -153,7 +159,7 @@ aiConfigSchema.methods.publicView = function () {
   const self = this as unknown as IAiConfig;
   const obj = self.toObject();
   const view: Record<string, { hasKey: boolean; baseURL: string; model: string }> = {};
-  for (const p of ['anthropic', 'openai', 'xai', 'minimax'] as AIProviderType[]) {
+  for (const p of ['anthropic', 'openai', 'xai', 'minimax', 'gemini', 'custom'] as AIProviderType[]) {
     const prov = obj.providers?.[p] ?? { apiKeyCipher: '', baseURL: '', model: '' };
     view[p] = {
       hasKey: !!prov.apiKeyCipher,

@@ -339,26 +339,99 @@ select option {
     box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.20);
   }
 
-  /* ═════════ Primary gradient button (Linear/Vercel style) ═════════
-     Muted green gradient, NOT a flat bright green. Hover = brighter
-     + green glow. Used for hero CTAs and "Ask Question" pill. */
-  .btn-primary-gradient {
-    background-image: linear-gradient(180deg, #2dd070 0%, #16a34a 100%);
+  /* ═════════ Unified Button System ═════════ */
+  .btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .btn-base svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .btn-base:hover svg {
+    opacity: 1;
+  }
+
+  /* Primary Button (Get Started / Ask Question) */
+  .btn-primary {
+    background-color: #6e8f83;
+    color: #ffffff;
+    box-shadow: none;
+    border: none;
+  }
+  .btn-primary:hover {
+    background-color: #5f7f73;
+    transform: none;
+    box-shadow: none;
+  }
+  .btn-primary:active {
+    background-color: #55786d;
+    transform: none;
+  }
+  
+  [data-theme="dark"] .btn-primary {
+    background-color: #16a34a; /* keeping existing dark mode base */
     color: #0B0F0D;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    transition: filter 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    background-image: none; /* remove gradient */
+    box-shadow: none; /* remove glow */
   }
-  .btn-primary-gradient:hover {
-    background-image: linear-gradient(180deg, #34d97a 0%, #1ea854 100%);
-    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.30),
-                inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    transform: translateY(-1px);
+  [data-theme="dark"] .btn-primary:hover {
+    background-color: #15803d; /* darker hover */
+    box-shadow: none;
   }
-  .btn-primary-gradient:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10),
-                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  [data-theme="dark"] .btn-primary:active {
+    background-color: #166534;
+  }
+
+  /* Secondary Button (Search input) */
+  .btn-secondary {
+    background-color: #e6efea;
+    color: #5f7f73;
+    box-shadow: none;
+    border: none;
+  }
+  .btn-secondary:hover {
+    background-color: #dde9e3;
+    box-shadow: none;
+  }
+  [data-theme="dark"] .btn-secondary {
+    background-color: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-text-rgb));
+    box-shadow: none;
+  }
+  [data-theme="dark"] .btn-secondary:hover {
+    background-color: rgba(34, 197, 94, 0.85); /* slightly reduced contrast */
+    box-shadow: none;
+  }
+
+  /* Ghost Button (Ask in Community) */
+  .btn-ghost {
+    background-color: transparent;
+    border: 1px solid #d6ded9;
+    color: #5f7f73;
+    box-shadow: none;
+  }
+  .btn-ghost:hover {
+    background-color: #f3f7f5;
+  }
+  [data-theme="dark"] .btn-ghost {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+  }
+  [data-theme="dark"] .btn-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   /* Focus glow ring — soft green halo on focused interactive surfaces */
@@ -367,15 +440,11 @@ select option {
     box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.35);
   }
 
-  /* In dark mode, override the flat .bg-accent to use the muted
-     gradient instead of a solid bright green. The text colour is
-     already handled via .text-accent-text. */
-  [data-theme="dark"] .bg-accent:not(.btn-primary-gradient) {
-    background-image: linear-gradient(180deg, #2dd070 0%, #16a34a 100%);
-    background-color: transparent;
-  }
-  [data-theme="dark"] .bg-accent:not(.btn-primary-gradient):hover {
-    background-image: linear-gradient(180deg, #34d97a 0%, #1ea854 100%);
+  /* In dark mode, override the flat .bg-accent if needed.
+     Removing the .btn-primary-gradient related overrides. */
+  [data-theme="dark"] .bg-accent:not(.btn-primary, .btn-secondary) {
+    background-color: rgb(var(--accent-rgb));
+    background-image: none;
   }
 
   /* ═════════════════════════════════════════════════════════════
@@ -691,59 +760,41 @@ select option {
   }
 
   /* ═════════════════════════════════════════════════════════════
-     .search-ask-btn — "Ask the Community" ghost button in search
-     Ghost style: blends with UI, green accent on hover.
-     DARK: dark glass bg, muted text, green on hover with glow.
-     LIGHT: white bg, gray text, green on hover.
+     Ask in Community (No Results block)
      ═════════════════════════════════════════════════════════════ */
-  .search-ask-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 16px;
-    border-radius: 9999px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background-color: #ffffff;
-    color: #374151;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    cursor: pointer;
-    transition: background-color 0.2s ease,
-                border-color 0.2s ease,
-                color 0.2s ease,
-                box-shadow 0.2s ease;
+  .ask-community-container {
+    background-color: #f4f7f5;
+    border-color: #e3ebe6;
   }
-  .search-ask-btn:hover {
-    background-color: rgba(22, 163, 74, 0.08);
-    border-color: rgba(22, 163, 74, 0.2);
-    color: #16A34A;
+  .ask-community-container:hover {
+    background-color: #eef4f1;
   }
-  .search-ask-btn:active {
-    background-color: rgba(22, 163, 74, 0.12);
+  .ask-community-title {
+    color: #2f3e39;
   }
-  .search-ask-btn .search-ask-btn-icon {
-    color: #16A34A;
-    transition: color 0.2s ease;
+  .ask-community-icon {
+    color: #2f3e39;
   }
-  [data-theme="dark"] .search-ask-btn {
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #D1D5DB;
-  }
-  [data-theme="dark"] .search-ask-btn:hover {
-    background-color: rgba(34, 197, 94, 0.08);
-    border-color: rgba(34, 197, 94, 0.25);
-    color: #22C55E;
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
-  }
-  [data-theme="dark"] .search-ask-btn:active {
-    background-color: rgba(34, 197, 94, 0.12);
-  }
-  [data-theme="dark"] .search-ask-btn .search-ask-btn-icon {
-    color: #22C55E;
+  .ask-community-action {
+    color: #5f7f73;
   }
 
+  [data-theme="dark"] .ask-community-container {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  [data-theme="dark"] .ask-community-container:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  [data-theme="dark"] .ask-community-title {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  [data-theme="dark"] .ask-community-icon {
+    color: #ffffff;
+  }
+  [data-theme="dark"] .ask-community-action {
+    color: #9fb8ad;
+  }
   /* ═════════════════════════════════════════════════════════════
      .search-popular-pill — enhanced popular search capsules
      Top 3 are prominent; all use rounded-full pills.
@@ -818,6 +869,502 @@ select option {
     background-color: rgba(255, 255, 255, 0.08);
     color: #9CA3AF;
   }
+
+  /* ═════════════════════════════════════════════════════════════
+     .faq-card-clay — Premium FAQ category cards
+     Calm, neutral cards with very subtle tinted backgrounds.
+     Category color on badge + CTA only. SVG as aligned
+     background accent with consistent placement rhythm.
+     ═════════════════════════════════════════════════════════════ */
+  .faq-card-clay {
+    position: relative;
+    min-height: 300px;
+    border-radius: 16px;
+    padding: 26px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Subtle radial highlight — top right glow */
+  .faq-card-clay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .faq-card-clay:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.10);
+  }
+  .faq-card-clay:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.20),
+                0 8px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Badge — small icon container top-left */
+  .faq-card-clay__badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Floating illustration — controlled container, top-right */
+  .faq-card-clay__illustration {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    opacity: 0.80;
+    transform: rotate(-6deg) translateY(-2px);
+    pointer-events: none;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15))
+            saturate(0.82);
+    transition: opacity 0.25s ease,
+                filter 0.25s ease;
+    z-index: 0;
+  }
+  .faq-card-clay:hover .faq-card-clay__illustration {
+    opacity: 0.95;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18))
+            saturate(0.88);
+  }
+
+  /* Question count pill */
+  .faq-card-clay__count {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background-color: rgba(0, 0, 0, 0.04);
+    color: rgba(0, 0, 0, 0.40);
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Title */
+  .faq-card-clay__title {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 650;
+    color: #1a1a1a;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 1;
+    transition: color 0.2s ease;
+  }
+
+  /* Description */
+  .faq-card-clay__desc {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #888;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Top questions section */
+  .faq-card-clay__questions-divider {
+    margin-top: 16px;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 1;
+  }
+  .faq-card-clay__questions-label {
+    margin-top: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.28);
+    position: relative;
+    z-index: 1;
+  }
+  .faq-card-clay__questions-list {
+    margin-top: 8px;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .faq-card-clay__questions-list li {
+    font-size: 12.5px;
+    color: rgba(0, 0, 0, 0.35);
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.65;
+    transition: color 0.25s ease, opacity 0.25s ease;
+  }
+
+  /* CTA — "Explore all →" */
+  .faq-card-clay__cta {
+    margin-top: auto;
+    padding-top: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    z-index: 1;
+    transition: gap 0.25s ease, color 0.25s ease;
+  }
+  .faq-card-clay__cta svg {
+    transition: transform 0.25s ease;
+  }
+  .faq-card-clay:hover .faq-card-clay__cta svg {
+    transform: translateX(2px);
+  }
+
+  /* ── Hover contrast boost (light mode) ── */
+  .faq-card-clay:hover .faq-card-clay__title {
+    color: #0a0a0a;
+  }
+  .faq-card-clay:hover .faq-card-clay__questions-list li {
+    color: rgba(0, 0, 0, 0.50);
+    opacity: 0.9;
+  }
+
+  /* ── Dark mode overrides — glassmorphism ── */
+  [data-theme="dark"] .faq-card-clay {
+    background: rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  [data-theme="dark"] .faq-card-clay::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 40%);
+  }
+  [data-theme="dark"] .faq-card-clay:hover {
+    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(34, 197, 94, 0.35);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45),
+                0 0 1px rgba(34, 197, 94, 0.15);
+  }
+
+  /* SVG — environment-blended, consistent size */
+  [data-theme="dark"] .faq-card-clay__illustration {
+    opacity: 0.80;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.40))
+            brightness(0.9)
+            saturate(0.85)
+            hue-rotate(-8deg);
+  }
+  [data-theme="dark"] .faq-card-clay:hover .faq-card-clay__illustration {
+    opacity: 0.95;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45))
+            brightness(0.95)
+            saturate(0.88)
+            hue-rotate(-8deg);
+  }
+
+  /* Text contrast — green-adapted tones */
+  [data-theme="dark"] .faq-card-clay__count {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.38);
+  }
+  [data-theme="dark"] .faq-card-clay__title {
+    color: #E6F1EC;
+  }
+  [data-theme="dark"] .faq-card-clay__desc {
+    color: #9FB3A8;
+  }
+  [data-theme="dark"] .faq-card-clay__questions-divider {
+    border-top-color: rgba(255, 255, 255, 0.035);
+  }
+  [data-theme="dark"] .faq-card-clay__questions-label {
+    color: rgba(255, 255, 255, 0.20);
+  }
+  [data-theme="dark"] .faq-card-clay__questions-list li {
+    color: #6B7D74;
+    opacity: 0.65;
+  }
+
+  /* Hover text — increase contrast */
+  [data-theme="dark"] .faq-card-clay:hover .faq-card-clay__title {
+    color: #F1F5F0;
+  }
+  [data-theme="dark"] .faq-card-clay:hover .faq-card-clay__questions-list li {
+    color: #9FB3A8;
+    opacity: 0.9;
+  }
+
+  /* ═════════════════════════════════════════════════════════════
+     .faq-item — Accordion FAQ card (category detail view)
+     Interactive content blocks with depth, hover feedback,
+     expanded left-accent state, and calm dark mode. Each FAQ
+     feels like a clear, clickable unit.
+     ═════════════════════════════════════════════════════════════ */
+
+  /* Sort header bar */
+  .faq-sort-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .faq-sort-bar__count {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.40);
+    letter-spacing: 0.01em;
+  }
+  .faq-sort-bar__select {
+    border-radius: 9999px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.55);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .faq-sort-bar__select:focus {
+    outline: none;
+    border-color: rgb(var(--accent-rgb) / 0.35);
+  }
+  [data-theme="dark"] .faq-sort-bar__count {
+    color: rgba(255, 255, 255, 0.35);
+  }
+  [data-theme="dark"] .faq-sort-bar__select {
+    background: #0c1a16;
+    border-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* ── Individual FAQ card ── */
+  .faq-item {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: 2px solid transparent;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
+                0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  /* Hover — lift + deeper shadow + subtle bg tint (#4) */
+  .faq-item:hover {
+    transform: translateY(-1px);
+    background: #f9fafb;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07),
+                0 2px 4px rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  /* Expanded — left accent + bg shift (#5) */
+  .faq-item--expanded {
+    background: #f9fafb;
+    border-left-color: rgba(16, 185, 129, 0.55);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06),
+                0 2px 6px rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.07);
+  }
+  .faq-item--expanded:hover {
+    transform: none;
+  }
+
+  /* ── Question row — always visible (#2) ── */
+  .faq-item__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    -webkit-user-select: none;
+    user-select: none;
+    padding: 16px 20px;
+  }
+
+  /* Typography: 15px medium (#9) */
+  .faq-item__question-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Chevron — opacity + rotation (#6) ── */
+  .faq-item__chevron {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: rgba(0, 0, 0, 0.20);
+    opacity: 0.6;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.2s ease,
+                opacity 0.2s ease;
+  }
+  .faq-item:hover .faq-item__chevron {
+    color: rgba(0, 0, 0, 0.40);
+    opacity: 1;
+  }
+  .faq-item--expanded .faq-item__chevron {
+    transform: rotate(180deg);
+    color: rgb(var(--accent-rgb));
+    opacity: 1;
+  }
+
+  /* ── Expandable body — smooth reveal (#7) ── */
+  .faq-item__body {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease 0.05s;
+    position: relative;
+    z-index: 1;
+  }
+  .faq-item--expanded .faq-item__body {
+    max-height: 1200px;
+    opacity: 1;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease 0.08s;
+  }
+
+  .faq-item__body-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  /* Answer text — divider only when visible (#10), typography (#9) */
+  .faq-item__answer {
+    margin-top: 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    line-height: 1.7;
+    color: #4b5563;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Meta row */
+  .faq-item__meta {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.35);
+  }
+
+  /* Meta pill — consistent with design system (#8) */
+  .faq-item__meta-pill {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: #4b5563;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* ══════════════════════════════════════════════════
+     Dark mode — deep green environment
+     ══════════════════════════════════════════════════ */
+  [data-theme="dark"] .faq-item {
+    background: #081512;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-left: 2px solid transparent;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Dark hover (#4) */
+  [data-theme="dark"] .faq-item:hover {
+    background: rgba(16, 185, 129, 0.04);
+    border-color: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Dark expanded (#5) */
+  [data-theme="dark"] .faq-item--expanded {
+    background: #0b1f1a;
+    border-left-color: rgba(16, 185, 129, 0.45);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55),
+                inset 0 0 20px rgba(16, 185, 129, 0.03);
+  }
+  [data-theme="dark"] .faq-item--expanded:hover {
+    transform: none;
+    background: #0b1f1a;
+  }
+
+  /* Dark question text */
+  [data-theme="dark"] .faq-item__question-text {
+    color: #E6F1EC;
+  }
+
+  /* Dark chevron */
+  [data-theme="dark"] .faq-item__chevron {
+    color: rgba(255, 255, 255, 0.18);
+  }
+  [data-theme="dark"] .faq-item:hover .faq-item__chevron {
+    color: rgba(255, 255, 255, 0.40);
+  }
+  [data-theme="dark"] .faq-item--expanded .faq-item__chevron {
+    color: #22C55E;
+  }
+
+  /* Dark answer (#9) */
+  [data-theme="dark"] .faq-item__answer {
+    color: #9ca3af;
+    border-top-color: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Dark meta */
+  [data-theme="dark"] .faq-item__meta {
+    color: rgba(255, 255, 255, 0.28);
+  }
+  [data-theme="dark"] .faq-item__meta-pill {
+    background: rgba(255, 255, 255, 0.07);
+    color: #d1d5db;
+  }
+
+
 
   /* Doodle underline decoration (for hero headings) */
   .doodle-underline {
@@ -1309,4 +1856,190 @@ select option {
 
 .animate-slide-up {
   animation: slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN PANEL — Reusable dark-mode-ready component classes
+   All classes use theme CSS variables so they auto-adapt to
+   both light and dark modes without any dark: prefix juggling.
+   ══════════════════════════════════════════════════════════════════ */
+@layer components {
+  /* ── Table structures ─────────────────────────────────────────── */
+  .admin-table-wrap {
+    @apply bg-card border border-border rounded-xl overflow-hidden;
+  }
+  .admin-thead-row {
+    @apply bg-mist border-b border-border;
+  }
+  .admin-th {
+    @apply px-3 py-2.5 text-left text-[10px] font-semibold text-ink-faint uppercase tracking-widest whitespace-nowrap;
+  }
+  .admin-td {
+    @apply px-3 py-3 text-sm text-ink;
+  }
+  .admin-tr {
+    @apply border-b border-border/50 last:border-0 hover:bg-mist transition-colors;
+  }
+
+  /* ── Card surfaces ────────────────────────────────────────────── */
+  .admin-card-surface {
+    @apply bg-card border border-border rounded-xl overflow-hidden;
+  }
+  .admin-card-header {
+    @apply px-4 py-3 border-b border-border;
+  }
+  .admin-stat-mini {
+    @apply bg-bg-secondary border border-border rounded-lg;
+  }
+
+  /* ── Form controls ────────────────────────────────────────────── */
+  .admin-input {
+    @apply w-full px-3 py-2 rounded-md text-sm text-ink bg-bg-secondary border border-border outline-none focus:border-accent transition-colors;
+    &::placeholder { color: rgb(var(--text-muted-rgb)); }
+  }
+  .admin-textarea {
+    @apply w-full px-3 py-2 rounded-md text-sm text-ink bg-bg-secondary border border-border outline-none focus:border-accent transition-colors resize-none;
+    &::placeholder { color: rgb(var(--text-muted-rgb)); }
+  }
+  .admin-select {
+    @apply px-2.5 py-1.5 rounded-md text-sm text-ink bg-bg-secondary border border-border outline-none focus:border-accent transition-colors;
+  }
+  .admin-search-input {
+    @apply w-full pl-8 pr-3 py-1.5 rounded-md text-sm text-ink bg-bg-secondary border border-border outline-none focus:border-accent transition-colors;
+    &::placeholder { color: rgb(var(--text-muted-rgb)); }
+  }
+  .admin-label {
+    @apply block text-xs font-medium text-ink-soft mb-1;
+  }
+
+  /* ── Modal structures ─────────────────────────────────────────── */
+  .admin-modal-panel {
+    background: var(--modal-bg);
+    border: 1px solid var(--modal-border);
+    @apply rounded-xl shadow-float;
+  }
+  .admin-modal-header {
+    border-bottom: 1px solid var(--modal-border);
+    @apply px-5 py-4 flex items-center justify-between;
+  }
+  .admin-modal-body {
+    @apply px-5 py-4;
+  }
+  .admin-modal-footer {
+    border-top: 1px solid var(--modal-border);
+    @apply px-5 py-4 flex flex-wrap gap-2;
+  }
+
+  /* ── Pagination ───────────────────────────────────────────────── */
+  .admin-pagination {
+    @apply flex items-center justify-between px-4 py-3 border-t border-border text-sm text-ink-faint;
+  }
+  .admin-pagination-btn {
+    @apply px-3 py-1 rounded-md text-sm text-ink-soft hover:bg-mist disabled:opacity-30 transition-colors;
+  }
+
+  /* ── Empty state ──────────────────────────────────────────────── */
+  .admin-empty {
+    @apply py-12 text-center text-sm text-ink-faint;
+  }
+
+  /* ── Buttons ──────────────────────────────────────────────────── */
+  .admin-btn-primary {
+    @apply px-4 py-2 rounded-md text-sm font-medium disabled:opacity-40 transition-colors;
+    background: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-text-rgb));
+  }
+  .admin-btn-primary:hover:not(:disabled) {
+    background: rgb(var(--accent-hover-rgb));
+  }
+  .admin-btn-ghost {
+    @apply px-4 py-2 rounded-md text-sm text-ink-faint hover:text-ink hover:bg-mist transition-colors;
+  }
+  .admin-btn-outline {
+    @apply px-4 py-2 rounded-md text-sm border border-border text-ink-soft hover:bg-mist disabled:opacity-40 transition-colors;
+  }
+  .admin-btn-danger {
+    @apply px-4 py-2 rounded-md text-sm font-medium text-white bg-danger hover:bg-danger/80 disabled:opacity-40 transition-colors;
+  }
+  .admin-btn-warn {
+    @apply px-4 py-2 rounded-md text-sm font-medium text-white bg-warning hover:bg-warning/80 disabled:opacity-40 transition-colors;
+  }
+  .admin-btn-success {
+    @apply px-4 py-2 rounded-md text-sm font-medium text-white bg-success hover:bg-success/80 disabled:opacity-50 transition-colors;
+  }
+  .admin-btn-sm-outline {
+    @apply px-2.5 py-1 rounded-md text-[10px] border border-border text-ink-soft hover:border-border-medium hover:text-ink transition-colors;
+  }
+
+  /* ── Toast notifications ──────────────────────────────────────── */
+  .admin-toast-success {
+    @apply bg-success/10 border border-success/20 text-success;
+  }
+  .admin-toast-warn {
+    @apply bg-warning/10 border border-warning/20 text-warning;
+  }
+  .admin-toast-error {
+    @apply bg-danger/10 border border-danger/20 text-danger;
+  }
+
+  /* ── Tab bar ──────────────────────────────────────────────────── */
+  .admin-tab-bar {
+    @apply flex rounded-lg border border-border overflow-hidden text-xs font-medium shrink-0;
+  }
+  .admin-tab {
+    @apply px-4 py-2 transition-colors text-ink-soft hover:bg-mist;
+  }
+  .admin-tab-active {
+    background: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-text-rgb));
+  }
+
+  /* ── Status badge base ────────────────────────────────────────── */
+  .admin-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border;
+  }
+  .admin-badge-approved {
+    background: var(--tag-high-bg);
+    color: var(--tag-high-text);
+    border-color: var(--tag-high-bg);
+  }
+  .admin-badge-pending {
+    background: var(--tag-medium-bg);
+    color: var(--tag-medium-text);
+    border-color: var(--tag-medium-bg);
+  }
+  .admin-badge-rejected {
+    background: var(--danger-bg);
+    color: rgb(var(--danger-rgb));
+    border-color: var(--danger-bg);
+  }
+  .admin-badge-admin {
+    background: rgba(139, 92, 246, 0.14);
+    color: #c4b5fd;
+    border-color: rgba(139, 92, 246, 0.25);
+  }
+  .admin-badge-moderator {
+    background: rgba(34, 211, 238, 0.12);
+    color: #67e8f9;
+    border-color: rgba(34, 211, 238, 0.20);
+  }
+  .admin-badge-user {
+    background: rgba(59, 130, 246, 0.12);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.20);
+  }
+  .admin-badge-default {
+    background: rgba(var(--border-rgb) / 0.4);
+    color: rgb(var(--text-muted-rgb));
+    border-color: rgba(var(--border-rgb) / 0.6);
+  }
+
+  /* Light-mode badge overrides — richer tints on white backgrounds */
+  :root .admin-badge-approved { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+  :root .admin-badge-pending  { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+  :root .admin-badge-rejected { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+  :root .admin-badge-admin    { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+  :root .admin-badge-moderator{ background: #ecfeff; color: #155e75; border-color: #a5f3fc; }
+  :root .admin-badge-user     { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+  :root .admin-badge-default  { background: #f9fafb; color: #374151; border-color: #e5e7eb; }
 }

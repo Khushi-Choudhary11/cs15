@@ -28,15 +28,15 @@ export interface FAQItem {
 export function TrustBadge({ level }: { level?: string }) {
   if (!level) return null;
   const map: Record<string, { label: string; class: string }> = {
-    high:   { label: 'Official', class: 'bg-stone-100 text-stone-600 border-stone-200' },
-    expert: { label: 'Admin Approved', class: 'bg-blue-50 text-blue-700 border-blue-200' },
-    medium: { label: 'Community Approved', class: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    low:    { label: 'Community', class: 'bg-amber-50 text-amber-700 border-amber-200' },
+    high:   { label: 'Official', class: 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/10 dark:text-gray-300 dark:border-white/10' },
+    expert: { label: 'Admin Approved', class: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-white/10 dark:text-blue-300 dark:border-white/10' },
+    medium: { label: 'Community Approved', class: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-white/10 dark:text-emerald-300 dark:border-white/10' },
+    low:    { label: 'Community', class: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-white/10 dark:text-amber-300 dark:border-white/10' },
   };
   const cfg = map[level];
   if (!cfg) return null;
   return (
-    <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded border font-medium ${cfg.class}`}>
+    <span className={`ml-1.5 text-[11px] px-2 py-0.5 rounded-md border font-medium ${cfg.class}`}>
       {cfg.label}
     </span>
   );
@@ -45,14 +45,14 @@ export function TrustBadge({ level }: { level?: string }) {
 export function SourceBadge({ sourceType }: { sourceType?: string }) {
   if (!sourceType || sourceType === 'manual') return null;
   const map: Record<string, { label: string; class: string }> = {
-    community_promotion: { label: 'From Community', class: 'bg-purple-50 text-purple-700 border-purple-200' },
-    zoom_transcript:     { label: 'From Meetings',  class: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
-    expert_verified:     { label: 'Expert Verified', class: 'bg-blue-50 text-blue-700 border-blue-200' },
+    community_promotion: { label: 'From Community', class: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-white/10 dark:text-purple-300 dark:border-white/10' },
+    zoom_transcript:     { label: 'From Meetings',  class: 'bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-white/10 dark:text-cyan-300 dark:border-white/10' },
+    expert_verified:     { label: 'Expert Verified', class: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-white/10 dark:text-blue-300 dark:border-white/10' },
   };
   const cfg = map[sourceType];
   if (!cfg) return null;
   return (
-    <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded border font-medium ${cfg.class}`}>
+    <span className={`ml-1.5 text-[11px] px-2 py-0.5 rounded-md border font-medium ${cfg.class}`}>
       {cfg.label}
     </span>
   );
@@ -141,6 +141,116 @@ export const IconGrid = (): React.ReactNode => (
 
 export const getCategoryTone = (name: string = ''): { accent: string; halo: string } => {
   return { accent: 'text-accent', halo: 'bg-accent/10' };
+};
+
+// ── Claymorphism card theme system ──────────────────────────────
+export interface CategoryTheme {
+  gradient: string;
+  gradientDark: string;
+  badgeBg: string;
+  badgeBgDark: string;
+  badgeColor: string;
+  badgeColorDark: string;
+  ctaColor: string;
+  ctaColorDark: string;
+  svgPath: string;
+}
+
+const CATEGORY_THEMES: Record<string, CategoryTheme> = {
+  green: {
+    gradient: 'linear-gradient(135deg, rgba(34,197,94,0.05) 0%, rgba(34,197,94,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(34,197,94,0.10)',
+    badgeBgDark: 'rgba(34,197,94,0.12)',
+    badgeColor: '#2d9f5a',
+    badgeColorDark: '#5ec07e',
+    ctaColor: '#2d9f5a',
+    ctaColorDark: '#5ec07e',
+    svgPath: '/book.svg',
+  },
+  blue: {
+    gradient: 'linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(59,130,246,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(59,130,246,0.10)',
+    badgeBgDark: 'rgba(59,130,246,0.12)',
+    badgeColor: '#3b7dd8',
+    badgeColorDark: '#6da3e8',
+    ctaColor: '#3b7dd8',
+    ctaColorDark: '#6da3e8',
+    svgPath: '/folder.svg',
+  },
+  yellow: {
+    gradient: 'linear-gradient(135deg, rgba(202,138,4,0.05) 0%, rgba(202,138,4,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(202,138,4,0.10)',
+    badgeBgDark: 'rgba(202,138,4,0.12)',
+    badgeColor: '#b08a28',
+    badgeColorDark: '#d4b04a',
+    ctaColor: '#b08a28',
+    ctaColorDark: '#d4b04a',
+    svgPath: '/chat.svg',
+  },
+  purple: {
+    gradient: 'linear-gradient(135deg, rgba(139,92,204,0.05) 0%, rgba(139,92,204,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(139,92,204,0.10)',
+    badgeBgDark: 'rgba(139,92,204,0.12)',
+    badgeColor: '#8b5cc8',
+    badgeColorDark: '#a88ad8',
+    ctaColor: '#8b5cc8',
+    ctaColorDark: '#a88ad8',
+    svgPath: '/monitor.svg',
+  },
+  teal: {
+    gradient: 'linear-gradient(135deg, rgba(20,184,166,0.05) 0%, rgba(20,184,166,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(20,184,166,0.10)',
+    badgeBgDark: 'rgba(20,184,166,0.12)',
+    badgeColor: '#1a9a8a',
+    badgeColorDark: '#4db8aa',
+    ctaColor: '#1a9a8a',
+    ctaColorDark: '#4db8aa',
+    svgPath: '/team.svg',
+  },
+  orange: {
+    gradient: 'linear-gradient(135deg, rgba(234,120,40,0.05) 0%, rgba(234,120,40,0.02) 100%)',
+    gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+    badgeBg: 'rgba(234,120,40,0.10)',
+    badgeBgDark: 'rgba(234,120,40,0.12)',
+    badgeColor: '#c47828',
+    badgeColorDark: '#d89850',
+    ctaColor: '#c47828',
+    ctaColorDark: '#d89850',
+    svgPath: '/calender.svg',
+  },
+};
+
+// Fallback theme (neutral sage)
+const FALLBACK_THEME: CategoryTheme = {
+  gradient: 'linear-gradient(135deg, rgba(90,122,90,0.05) 0%, rgba(90,122,90,0.02) 100%)',
+  gradientDark: 'linear-gradient(135deg, rgba(16,185,129,0.03), rgba(16,185,129,0.008))',
+  badgeBg: 'rgba(90,122,90,0.10)',
+  badgeBgDark: 'rgba(90,122,90,0.12)',
+  badgeColor: '#5a8a5a',
+  badgeColorDark: '#7eb07e',
+  ctaColor: '#5a8a5a',
+  ctaColorDark: '#7eb07e',
+  svgPath: '/shield.svg',
+};
+
+export const getCategoryTheme = (name: string = ''): CategoryTheme => {
+  const key = name.toLowerCase();
+  if (key.includes('intern') || key.includes('about')) return CATEGORY_THEMES.green;
+  if (key.includes('phase') || key.includes('course')) return CATEGORY_THEMES.blue;
+  if (key.includes('chat') || key.includes('yaksha')) return CATEGORY_THEMES.yellow;
+  if (key.includes('vibe') || key.includes('platform')) return CATEGORY_THEMES.purple;
+  if (key.includes('team')) return CATEGORY_THEMES.teal;
+  if (key.includes('timing') || key.includes('date') || key.includes('schedule')) return CATEGORY_THEMES.orange;
+  if (key.includes('noc') || key.includes('certificate')) return { ...CATEGORY_THEMES.green, svgPath: '/document.svg' };
+  if (key.includes('offer')) return { ...CATEGORY_THEMES.blue, svgPath: '/document.svg' };
+  if (key.includes('project')) return { ...CATEGORY_THEMES.teal, svgPath: '/folder.svg' };
+  if (key.includes('rosetta')) return { ...CATEGORY_THEMES.purple, svgPath: '/folder.svg' };
+  return FALLBACK_THEME;
 };
 
 export const getCategoryIcon = (name: string = ''): React.ReactNode => {

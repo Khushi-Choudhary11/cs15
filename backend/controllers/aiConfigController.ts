@@ -31,6 +31,8 @@ export const getAiConfig = async (_req: Request, res: Response): Promise<void> =
           openai:    { apiKeyCipher: '', baseURL: '', model: '' },
           xai:       { apiKeyCipher: '', baseURL: '', model: '' },
           minimax:   { apiKeyCipher: '', baseURL: '', model: '' },
+          gemini:    { apiKeyCipher: '', baseURL: '', model: '' },
+          custom:    { apiKeyCipher: '', baseURL: '', model: '' },
         },
         features: {
           duplicateDetection:  { enabled: true, model: 'claude-sonnet-4-20250514', temperature: 0.1, maxTokens: 1024 },
@@ -73,7 +75,7 @@ export const updateAiConfig = async (req: Request, res: Response): Promise<void>
     if (features !== undefined) config.features = { ...config.features, ...features } as IAiConfig['features'];
 
     if (providers && typeof providers === 'object') {
-      for (const prov of ['anthropic', 'openai', 'xai', 'minimax'] as AIProviderType[]) {
+      for (const prov of ['anthropic', 'openai', 'xai', 'minimax', 'gemini', 'custom'] as AIProviderType[]) {
         const update = providers[prov];
         if (!update) continue;
         if (update.apiKey !== undefined) config.setApiKey(prov, update.apiKey);
@@ -133,6 +135,8 @@ export const getAiProviders = async (_req: Request, res: Response): Promise<void
     openai:    { label: 'OpenAI GPT',       defaultModel: 'gpt-4o-mini',              hasKey: false, configuredModel: 'gpt-4o-mini' },
     xai:       { label: 'xAI Grok',         defaultModel: 'grok-3',                    hasKey: false, configuredModel: 'grok-3' },
     minimax:   { label: 'MiniMax',          defaultModel: 'MiniMax-Text-01',           hasKey: false, configuredModel: 'MiniMax-Text-01' },
+    gemini:    { label: 'Google Gemini',    defaultModel: 'gemini-1.5-flash',          hasKey: false, configuredModel: 'gemini-1.5-flash' },
+    custom:    { label: 'Custom Provider',  defaultModel: 'custom-model',              hasKey: false, configuredModel: 'custom-model' },
   };
 
   for (const key of Object.keys(providerMeta) as ProviderKey[]) {
@@ -160,7 +164,7 @@ export const getAiProviders = async (_req: Request, res: Response): Promise<void
 
 export const testProvider = async (req: Request, res: Response): Promise<void> => {
   const { provider } = req.query as { provider?: string };
-  const validProviders: AIProviderType[] = ['anthropic', 'openai', 'xai', 'minimax'];
+  const validProviders: AIProviderType[] = ['anthropic', 'openai', 'xai', 'minimax', 'gemini', 'custom'];
 
   if (!provider || !validProviders.includes(provider as AIProviderType)) {
     res.status(400).json({ ok: false, message: 'Invalid provider' });
@@ -180,7 +184,7 @@ export const testProvider = async (req: Request, res: Response): Promise<void> =
 
 export const revealApiKey = async (req: Request, res: Response): Promise<void> => {
   const { provider } = req.params;
-  const validProviders: AIProviderType[] = ['anthropic', 'openai', 'xai', 'minimax'];
+  const validProviders: AIProviderType[] = ['anthropic', 'openai', 'xai', 'minimax', 'gemini', 'custom'];
 
   if (!validProviders.includes(provider as AIProviderType)) {
     res.status(400).json({ message: 'Invalid provider' });
@@ -204,10 +208,10 @@ export const revealApiKey = async (req: Request, res: Response): Promise<void> =
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function envKeyName(p: AIProviderType): string {
-  return { anthropic: 'ANTHROPIC_API_KEY', openai: 'OPENAI_API_KEY', xai: 'XAI_API_KEY', minimax: 'MINIMAX_API_KEY' }[p];
+  return { anthropic: 'ANTHROPIC_API_KEY', openai: 'OPENAI_API_KEY', xai: 'XAI_API_KEY', minimax: 'MINIMAX_API_KEY', gemini: 'GEMINI_API_KEY', custom: 'CUSTOM_API_KEY' }[p];
 }
 function envModelName(p: AIProviderType): string {
-  return { anthropic: 'ANTHROPIC_MODEL', openai: 'OPENAI_MODEL', xai: 'XAI_MODEL', minimax: 'MINIMAX_MODEL' }[p];
+  return { anthropic: 'ANTHROPIC_MODEL', openai: 'OPENAI_MODEL', xai: 'XAI_MODEL', minimax: 'MINIMAX_MODEL', gemini: 'GEMINI_MODEL', custom: 'CUSTOM_MODEL' }[p];
 }
 
 /**
@@ -216,14 +220,26 @@ function envModelName(p: AIProviderType): string {
  */
 export async function detectActiveProvider(): Promise<AIProviderType> {
   const config = await AiConfig.findOne({ isActive: true });
+  const hasKey = (p: AIProviderType) => {
+    const keyEnv = { anthropic: 'ANTHROPIC_API_KEY', openai: 'OPENAI_API_KEY', xai: 'XAI_API_KEY', minimax: 'MINIMAX_API_KEY', gemini: 'GEMINI_API_KEY', custom: 'CUSTOM_API_KEY' }[p];
+    return !!((config && config.getApiKey(p)) || process.env[keyEnv]);
+  };
+
   if (config) {
-    if (config.getApiKey('anthropic') || process.env.ANTHROPIC_API_KEY) return 'anthropic';
-    if (config.getApiKey('openai')    || process.env.OPENAI_API_KEY)    return 'openai';
-    if (config.getApiKey('xai')       || process.env.XAI_API_KEY)       return 'xai';
-    if (config.getApiKey('minimax')   || process.env.MINIMAX_API_KEY)   return 'minimax';
+    const active = config.activeProvider;
+    if (active && hasKey(active)) return active;
+
+    if (hasKey('anthropic')) return 'anthropic';
+    if (hasKey('openai'))    return 'openai';
+    if (hasKey('xai'))       return 'xai';
+    if (hasKey('minimax'))   return 'minimax';
+    if (hasKey('gemini'))    return 'gemini';
+    if (hasKey('custom'))    return 'custom';
   }
-  if (process.env.ANTHROPIC_API_KEY) return 'anthropic';
-  if (process.env.OPENAI_API_KEY)    return 'openai';
-  if (process.env.XAI_API_KEY)       return 'xai';
-  return 'minimax';
+  if (hasKey('anthropic')) return 'anthropic';
+  if (hasKey('openai'))    return 'openai';
+  if (hasKey('xai'))       return 'xai';
+  if (hasKey('minimax'))   return 'minimax';
+  if (hasKey('gemini'))    return 'gemini';
+  return 'custom';
 }

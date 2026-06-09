@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 // We import generateToken indirectly: it lives in authController and is not
 // exported, so we replicate the same pattern here and verify the JWT shape
@@ -17,7 +18,6 @@ describe('JWT revocation: token shape', () => {
   });
 
   it('signs tokens that include both id and jti claims', () => {
-    const { v4: uuidv4 } = require('uuid') as { v4: () => string };
     const id = 'user_abc';
     const jti = uuidv4();
     const token = jwt.sign({ id, jti }, process.env.JWT_SECRET as string, { expiresIn: '7d' });
@@ -31,7 +31,6 @@ describe('JWT revocation: token shape', () => {
   });
 
   it('exp claim falls within 7 days of now (±60s slack for clock drift)', () => {
-    const { v4: uuidv4 } = require('uuid') as { v4: () => string };
     const token = jwt.sign({ id: 'u', jti: uuidv4() }, process.env.JWT_SECRET as string, { expiresIn: '7d' });
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { exp: number };
     const nowSec = Math.floor(Date.now() / 1000);
@@ -41,7 +40,6 @@ describe('JWT revocation: token shape', () => {
   });
 
   it('two consecutive tokens get different jtis (no collision risk)', () => {
-    const { v4: uuidv4 } = require('uuid') as { v4: () => string };
     const jtiA = uuidv4();
     const jtiB = uuidv4();
     expect(jtiA).not.toBe(jtiB);
